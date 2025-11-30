@@ -1,0 +1,30 @@
+logging:
+  structured:
+    format:
+      console: json
+    json:
+      pretty-print: true
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: library-events-consumer
+  kafka:
+    template:
+      default-topic: library-events
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: library-events-consumer-group
+      offset-reset: 0
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        schema.registry.url: http://localhost:8081 # Your Schema Registry URL
+        specific.avro.reader: true
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0

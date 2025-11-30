@@ -1,0 +1,27 @@
+logging:
+  structured:
+    format:
+      console: json
+    json:
+      pretty-print: true
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: library-events-producer
+  kafka:
+    template:
+      default-topic: library-events
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: http://localhost:8081
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0

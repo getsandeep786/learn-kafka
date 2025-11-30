@@ -1,0 +1,38 @@
+{
+  "type": "record",
+  "name": "LibraryEvent",
+  "namespace": "com.learnkafka.avro.schema",
+  "fields": [
+    {
+      "name": "libraryEventId",
+      "type": "string"
+    },
+    {
+      "name": "libraryEventType",
+      "type": {
+        "type": "enum",
+        "name": "LibraryEventType",
+        "symbols": [
+          "NEW",
+          "UPDATE",
+          "DELETE"
+        ],
+        "doc": "Type of the library event"
+      },
+      "default": "NEW",
+      "doc": "Indicates the operation: NEW, UPDATE or DELETE"
+    },
+    {
+      "name": "book",
+      "type": {
+        "type": "record",
+        "name": "Book",
+        "fields": [
+          { "name": "bookId", "type": "int" },
+          { "name": "bookName", "type": "string" },
+          { "name": "bookAuthor", "type": "string" }
+        ]
+      }
+    }
+  ]
+}
