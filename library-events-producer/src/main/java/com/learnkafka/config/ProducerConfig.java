@@ -1,0 +1,30 @@
+package com.learnkafka.config;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.learnkafka.avro.schema.LibraryEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+
+@Configuration
+public class ProducerConfig {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        return mapper;
+    }
+
+    @Bean
+    public KafkaTemplate<String, LibraryEvent> kafkaTemplate(ProducerFactory<String, LibraryEvent> producerFactory) {
+        KafkaTemplate<String, LibraryEvent> template = new KafkaTemplate<>(producerFactory);
+        template.setObservationEnabled(true);  // Enables trace header injection
+        return template;
+    }
+}

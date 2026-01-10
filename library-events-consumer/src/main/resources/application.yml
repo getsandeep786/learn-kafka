@@ -1,0 +1,46 @@
+logging:
+  level:
+    io.opentelemetry: DEBUG
+    dev.danvega: INFO
+    org.springframework.boot.actuator.autoconfigure.opentelemetry: DEBUG
+    org.springframework.boot.docker.compose: DEBUG
+
+server:
+  port: 8083
+  shutdown: immediate
+
+spring:
+  application:
+    name: library-events-consumer
+  kafka:
+    template:
+      default-topic: library-events
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: library-events-consumer-group
+      offset-reset: 0
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        schema.registry.url: http://localhost:8081 # Your Schema Registry URL
+        specific.avro.reader: true
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0  # 100% sampling for development
+    propagation:
+        type: W3C
+  otlp:
+    metrics:
+      export:
+        url: http://localhost:4318/v1/metrics
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
+    logging:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/logs
