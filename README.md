@@ -58,7 +58,7 @@ Spring Boot Actuator is Spring's traditional approach to observability and produ
 
 - Java 17+
 - Maven
-- Docker (for Grafana LGTM stack, Confluent Kafka, Conductor UI, Kafka Schema Registry and Postgresql.)
+- Docker (for Grafana LGTM stack, Confluent Kafka, Conductor UI, Kafka Schema Registry and Postgresql)
 
 The LGTM stack is Grafana Labs' open-source observability stack. The acronym stands for:
 
@@ -66,6 +66,10 @@ The LGTM stack is Grafana Labs' open-source observability stack. The acronym sta
 - Grafana — for visualization and dashboards
 - Tempo — for traces (distributed tracing backend)
 - Mimir — for metrics (long-term storage for Prometheus metrics)
+
+Endpoints used in this demo:
+- Grafana: http://localhost:3000
+- Conductor Console: http://localhost:8080
 
 ## Dependencies
 
