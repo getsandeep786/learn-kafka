@@ -1,37 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
+<Configuration status="WARN" packages="io.opentelemetry.instrumentation.log4j.appender.v2_17">
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
+        <Console name="console" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1}}{bright,yellow}: %msg%n%throwable" />
+                    pattern="%style{%d{ISO8601}}{FG_BLACK} %highlight{%-5level}{FATAL=bright red, ERROR=bright red, WARN=bright yellow, INFO=bright green, DEBUG=bright cyan, TRACE=bright blue} [%style{%t}{BRIGHT, FG_BLUE}] [%X{traceId}-%X{spanId}] %style{%C{1.}}{BRIGHT, FG_YELLOW}: %msg%n%throwable"/>
         </Console>
-
-        <RollingFile name="RollingFile"
-                     fileName="./logs/spring-boot-logger-consumer.log"
-                     filePattern="./logs/$${date:yyyy-MM}/spring-boot-logger-consumer-%d{-dd-MMMM-yyyy}-%i.log.gz">
-            <PatternLayout>
-                <pattern>%d %p %C{1} [%t] %m%n</pattern>
-            </PatternLayout>
-            <Policies>
-                <!-- rollover on startup, daily and when the file reaches
-                    10 MegaBytes -->
-                <OnStartupTriggeringPolicy />
-                <SizeBasedTriggeringPolicy
-                        size="10 MB" />
-                <TimeBasedTriggeringPolicy />
-            </Policies>
-        </RollingFile>
+        <OpenTelemetry name="otel" captureExperimentalAttributes="true" captureMapMessageAttributes="true"
+                       captureMarkerAttribute="true" captureContextDataAttributes="*"/>
+        <!--        <SplunkHttp name="splunkhttp" url="http://localhost:8088" token="e024e781-2cf5-465f-be50-7899eb29e9c7"-->
+        <!--                    host="localhost" index="library_events_consumer" type="raw" source="library-consumer-event-logs"-->
+        <!--                    sourcetype="log4j" messageFormat="text" disableCertificateValidation="true">-->
+        <!--            &lt;!&ndash;            <PatternLayout pattern="%m" />&ndash;&gt;-->
+        <!--            <JsonLayout compact="true" eventEol="true" includeStacktrace="true">-->
+        <!--                <KeyValuePair key="application" value="library-events-consumer"/>-->
+        <!--                <KeyValuePair key="environment" value="local"/>-->
+        <!--            </JsonLayout>-->
+        <!--        </SplunkHttp>-->
     </Appenders>
-
     <Loggers>
         <!-- LOG everything at INFO level -->
         <Root level="info">
-            <AppenderRef ref="Console" />
-            <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="console"/>
+            <!--            <AppenderRef ref="splunkhttp"/>-->
+            <AppenderRef ref="otel"/>
         </Root>
-
-        <!-- LOG "com.learnkafka*" at TRACE level -->
-        <Logger name="com.learnkafka" level="trace"></Logger>
     </Loggers>
-
 </Configuration>

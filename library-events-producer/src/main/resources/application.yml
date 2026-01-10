@@ -1,12 +1,13 @@
 logging:
-  structured:
-    format:
-      console: json
-    json:
-      pretty-print: true
+  level:
+    io.opentelemetry: DEBUG
+    dev.danvega: INFO
+    org.springframework.boot.actuator.autoconfigure.opentelemetry: DEBUG
+    org.springframework.boot.docker.compose: DEBUG
 
 server:
   port: 8082
+  shutdown: immediate
 
 spring:
   application:
@@ -24,4 +25,17 @@ spring:
 management:
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # 100% sampling for development
+  otlp:
+    metrics:
+      export:
+        url: http://localhost:4318/v1/metrics
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
+    logging:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/logs

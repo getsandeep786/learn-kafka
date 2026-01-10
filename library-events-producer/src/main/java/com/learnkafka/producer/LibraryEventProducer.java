@@ -20,7 +20,7 @@ public class LibraryEventProducer {
     private static final Logger LOGGER = LogManager.getLogger(LibraryEventProducer.class);
 
     @Autowired
-    KafkaTemplate<String, LibraryEvent> kafkaTemplate;
+    private KafkaTemplate<String, LibraryEvent> kafkaTemplate;
 
     String topic = "library-events";
 
@@ -32,11 +32,12 @@ public class LibraryEventProducer {
     }
 
     public void sendLibraryEvent(LibraryEvent libraryEvent) throws JsonProcessingException {
-
+        LOGGER.info("Inside Producer");
         String key = Optional.ofNullable(libraryEvent.getLibraryEventId())
                 .map(Object::toString)
                 .orElse(null);
         CompletableFuture<SendResult<String, LibraryEvent>> listenableFuture = kafkaTemplate.send(topic, libraryEvent);
+        LOGGER.info("Message sent from our end : {}", key);
         listenableFuture.whenComplete((result, ex) -> {
             if (ex == null) {
                 handleSuccess(key, libraryEvent, result);

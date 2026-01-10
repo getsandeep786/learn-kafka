@@ -1,5 +1,6 @@
 package com.learnkafka.controller;
 
+import com.learnkafka.api.LibraryEventApi;
 import com.learnkafka.avro.schema.LibraryEvent;
 import com.learnkafka.avro.schema.LibraryEventType;
 import com.learnkafka.producer.LibraryEventProducer;
@@ -21,8 +22,12 @@ public class LibraryEventsController {
     @Autowired
     LibraryEventProducer libraryEventProducer;
 
+    @Autowired
+    LibraryEventApi libraryEventApi;
+
     @PostMapping("/v1/library/event")
     public ResponseEntity<com.learnkafka.domain.LibraryEvent> postLibraryEvent(@RequestBody @Valid com.learnkafka.domain.LibraryEvent libraryEvent) {
+        LOGGER.info("Inside Controller");
         LOGGER.info("LibraryEvent : {} ", libraryEvent);
         try {
             LibraryEvent libraryEventAvro = LibraryEvent.newBuilder()
@@ -36,6 +41,7 @@ public class LibraryEventsController {
             //invoke kafka producer
             libraryEventAvro.setLibraryEventType(LibraryEventType.NEW);
             libraryEventProducer.sendLibraryEvent(libraryEventAvro);
+            libraryEventApi.callLibraryEventApi(libraryEvent.getLibraryEventId());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
