@@ -1,6 +1,7 @@
 package com.learnkafka.api;
 
 import com.learnkafka.api.dto.LibraryEventDTO;
+import com.learnkafka.util.TraceIdUtil;
 import jakarta.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,13 +16,18 @@ public class LibraryEventApi {
 
     private final RestClient restClient;
 
+    private final TraceIdUtil traceIdUtil;
+
     @Autowired
-    public LibraryEventApi(RestClient.Builder restClientBuilder) {
+    public LibraryEventApi(RestClient.Builder restClientBuilder, TraceIdUtil traceIdUtil) {
         this.restClient = restClientBuilder.baseUrl("http://localhost:8084").build();
+        this.traceIdUtil = traceIdUtil;
     }
 
     public void callLibraryEventApi(@NotNull String libraryEventId) {
         LOGGER.info("Calling Library Event API for ID: {}", libraryEventId);
+        String traceId = traceIdUtil.getCurrentTraceId();
+        LOGGER.info("Current Trace ID: {}", traceId);
         LibraryEventDTO libraryEventDTO = this.restClient.get()
                 .uri("/v1/library/event/7")
                 .retrieve()
