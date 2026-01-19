@@ -228,6 +228,48 @@ Request: POST /v1/library/event
 
 When you see a log with span B's ID, you know it happened during `simulateWork()`, not the controller method.
 
+### Printing the TraceId: Manually
+
+```java
+@Component
+public class TraceIdUtil {
+
+    private final Tracer tracer;
+
+    public TraceIdUtil(Tracer tracer) {
+        this.tracer = tracer;
+    }
+
+    /**
+     * Gets the current trace ID as a string, or null if no trace context is available.
+     */
+    public @Nullable String getCurrentTraceId() {
+        TraceContext context = tracer.currentTraceContext().context();
+        return context != null ? context.traceId() : null;
+    }
+}
+```
+
+```java
+@Service
+public class LibraryEventApi {
+
+    private static final Logger LOGGER = LogManager.getLogger(LibraryEventApi.class);
+    
+    private final TraceIdUtil traceIdUtil;
+
+    @Autowired
+    public LibraryEventApi(RestClient.Builder restClientBuilder, TraceIdUtil traceIdUtil) {
+        this.traceIdUtil = traceIdUtil;
+    }
+
+    public void callLibraryEventApi(@NotNull String libraryEventId) {
+        String traceId = traceIdUtil.getCurrentTraceId();
+        LOGGER.info("Current Trace ID: {}", traceId);
+    }
+}
+```
+
 ## Exporting Logs via OTLP
 
 This demo is configured to export logs to Grafana/Loki via OTLP. This allows you to view, search, and correlate logs with traces directly in Grafana.
