@@ -24,8 +24,17 @@ spring:
       properties:
         schema.registry.url: http://localhost:8081 # Your Schema Registry URL
         specific.avro.reader: true
+    listener:
+      concurrency: 4
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics  # Expose actuator endpoints
+  endpoint:
+    health:
+      show-details: always  # Show full health details
   tracing:
     sampling:
       probability: 1.0  # 100% sampling for development
