@@ -24,6 +24,7 @@ public class LibraryEventsListener {
                                     @Header(KafkaHeaders.OFFSET) String msgOffset,
                                     @Header(KafkaHeaders.RECEIVED_PARTITION) String partitionId,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {
+        LOGGER.info("===============================================================");
         activityMonitor.reset();
         LOGGER.info("Processing Library Event Message...");
         LOGGER.info("Message received from topic: {}, partition: {}, offset: {}", topicName, partitionId, msgOffset);
