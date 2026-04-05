@@ -47,6 +47,8 @@ public class KafkaRetryConfig {
 
         // Optional: Reset retry counter when exception type changes during retries
         errorHandler.setResetStateOnExceptionChange(true);
+        // Optional: Do not reset retry counter if recovery fails, to allow for proper logging of exhausted retries
+        errorHandler.setResetStateOnRecoveryFailure(false);
 
         return errorHandler;
     }
